@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace属性: 接口类的全限定名-->
+<mapper namespace="com.itheima.dao.CheckGroupDao">
+    <!--分页查询-->
+    <select id="findAll" parameterType="string" resultType="CheckGroup">
+        select * from t_checkgroup
+        <!--判断查询条件-->
+        <if test="value!=null and value.length>0">
+            where code like #{value} or name like #{value} or helpCode like #{value}
+        </if>
+    </select>
+
+    <!--回显检查-->
+    <select id="findCheckGroup" resultType="CheckItem">
+        select * from t_checkitem
+    </select>
+
+    <!--添加到检查组-->
+    <insert id="add" parameterType="checkgroup">
+        <selectKey resultType="int" order="AFTER" keyProperty="id">
+            select last_insert_id()
+        </selectKey>
+        insert into t_checkgroup (code,name,helpCode,sex,remark,attention)
+        values (#{code},#{name},#{helpCode},#{sex},#{remark},#{attention})
+    </insert>
+
+    <insert id="addCheckItem" parameterType="int">
+        insert into t_checkgroup_checkitem (checkgroup_id, checkitem_id)
+        values (#{checkGroupId}, #{checkitemId})
+    </insert>
+
+    <!--查询检查组是否被套餐使用-->
+    <select id="findById" parameterType="int" resultType="int">
+        select count(*) from t_setmeal_checkgroup where checkgroup_id=#{id}
+    </select>
+    <!--删除检查组-->
+    <delete id="deleteCheckgroup" parameterType="int">
+        delete from t_checkgroup where id=#{id}
+    </delete>
+
+    <!--回显检查组-->
+    <select id="findByCheckGroupId" parameterType="int" resultType="CheckGroup">
+        select * from t_checkgroup where id=#{checkGroupId}
+    </select>
+    <!--回显关联表信息-->
+    <select id="findCheckGroupId" resultType="int" parameterType="int">
+        select checkitem_id from t_checkgroup_checkitem where checkgroup_id=#{checkGroupId}
+    </select>
+
+    <!--执行修改-->
+    <!--添加到检查组-->
+    <update id="updata" parameterType="checkGroup">
+         update t_checkgroup set
+            code=#{code},
+            name=#{name},
+            helpCode=#{helpCode},
+            sex=#{sex},
+            remark=#{remark},
+            attention=#{attention}
+        where id=#{id}
+    </update>
+
+    <delete id="deleteCheck" parameterType="int">
+        delete from t_checkgroup_checkitem where checkgroup_id=#{id}
+    </delete>
+</mapper>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:security="http://www.springframework.org/schema/security"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd">
+
+
+    <!--配置拦截规则-->
+    <security:http auto-config="true" use-expressions="false">
+<!--
+    配置拦截路径
+    security:intercept-url： 可以配置多个
+    pattern="/**" 拦截所有的路径
+     access="ROLE_ADMIN":
+     要访问符合pattern的url时，登陆用户必须有ROLE_ADMIN的角色，如果没有则不能访问
+-->
+        <security:intercept-url pattern="/**" access="ROLE_ADMIN"/>
+
+    </security:http>
+
+    <!--配置认证管理器-->
+    <security:authentication-manager>
+        <security:authentication-provider>
+            <security:user-service>
+                <security:user name="admin" password="{noop}admin" authorities="ROLE_ADMIN"/>
+            </security:user-service>
+        </security:authentication-provider>
+    </security:authentication-manager>
+</beans>
